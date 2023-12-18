@@ -1,22 +1,14 @@
-import org.example.BaseBlock;
+package org.example;
+
+import org.example.block.BaseBlock;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+
+import static org.example.GlobalConstants.*;
 
 public class Main {
-    public static int padding = 10;
-    public static int margin = 20;
-    public static Color Background_color = new Color(0xD9D9D9);
-    public static Color File_color = new Color(0xCCCCFF);
-    public static Color Tools_color = new Color(0xD4D3FD);
 
-    public static final int PROPORTION = 1;
-    public static final int LABEL_PADDING = 10;
-    public static final Color FUNCTION_COLOR = Color.BLUE;
-    public static final int FUNCTION_THICKNESS = 2;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Graph Application");
@@ -24,13 +16,13 @@ public class Main {
         frame.setSize(800, 600);
         frame.getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 
-        BaseBlock baseBlock = new BaseBlock(Background_color);
-        baseBlock.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
+        BaseBlock baseBlock = new BaseBlock(BACKGROUND_COLOR);
+        baseBlock.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
         frame.add(baseBlock);
 
         frame.setVisible(true);
     }
-
+}
    /* static class BaseBlock extends JPanel {
         public BaseBlock(Color Graph_color) {
             setLayout(new BorderLayout());
@@ -189,4 +181,4 @@ public class Main {
             setBackground(Color.DARK_GRAY);
         }
     }
-}
+}*/

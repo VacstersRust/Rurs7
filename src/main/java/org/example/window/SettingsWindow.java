@@ -1,4 +1,4 @@
-package org.example;
+package org.example.window;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,10 +1,12 @@
-package org.example;
+package org.example.block;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
+import static org.example.GlobalConstants.*;
 
 public class DrawBlock extends JPanel {
     private ArrayList<Integer> xValues;
