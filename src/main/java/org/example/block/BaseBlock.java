@@ -13,7 +13,6 @@ public class BaseBlock extends JPanel {
         setBackground(Graph_color);
 
         this.setBackground(Color.WHITE);
-        add(this, BorderLayout.CENTER);
 
         SettingsBlock settingsBlock = new SettingsBlock();
         settingsBlock.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING));

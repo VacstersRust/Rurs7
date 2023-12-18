@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.block.BaseBlock;
+import org.example.block.DrawBlock;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,10 @@ public class Main {
         frame.getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 
         BaseBlock baseBlock = new BaseBlock(BACKGROUND_COLOR);
+        DrawBlock drawBlock = new DrawBlock();
+/*        drawBlock.setBackground(Color.WHITE);
+        frame.add(drawBlock, BorderLayout.CENTER);*/
+        baseBlock.add(drawBlock);
         baseBlock.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
         frame.add(baseBlock);
 
