@@ -1,28 +1,32 @@
 package org.example.block;
 
-import org.example.tools.ToolKit;
-
+import org.example.tools.ToolBar;
 import javax.swing.*;
 import java.awt.*;
 
 import static org.example.GlobalConstants.*;
 
+
 public class BaseBlock extends JPanel {
-    public BaseBlock(Color Graph_color) {
+    public BaseBlock() {
         setLayout(new BorderLayout());
-        setBackground(Graph_color);
+        setBorder(BorderFactory.createEmptyBorder(WIN_PADDING, WIN_PADDING, WIN_PADDING, WIN_PADDING));
+        setBackground(BACKGROUND_COLOR);
 
-        this.setBackground(Color.WHITE);
+        // Окно графика:
+        DrawBlock drawBlock = new DrawBlock();
+        add(drawBlock);
 
+        // Панель управления:
         SettingsBlock settingsBlock = new SettingsBlock();
         settingsBlock.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING));
         settingsBlock.setBackground(FILE_COLOR);
-        settingsBlock.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         add(settingsBlock, BorderLayout.NORTH);
 
-        ToolKit toolKitBlock = new ToolKit(new DrawBlock());
-        toolKitBlock.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING));
-        toolKitBlock.setBackground(TOOLS_COLOR);
-        add(toolKitBlock, BorderLayout.SOUTH);
+        // Панель инструментов:
+        ToolBar ToolBarBlock = new ToolBar(new DrawBlock());
+        ToolBarBlock.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING));
+        ToolBarBlock.setBackground(TOOLS_COLOR);
+        add(ToolBarBlock, BorderLayout.SOUTH);
     }
 }
