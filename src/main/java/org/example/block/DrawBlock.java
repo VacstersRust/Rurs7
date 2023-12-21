@@ -11,6 +11,7 @@
 
 package org.example.block;
 
+import static org.example.GlobalConstants.*;
 import org.example.tools.ToolKit;
 
 import javax.swing.*;
@@ -19,19 +20,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import static org.example.GlobalConstants.*;
 
 public class DrawBlock extends JPanel {
-
+    private boolean isSelecting = false;
     private ArrayList<Integer> xValues;
     private ArrayList<Integer> yValues;
-
     private double xMin = -10.0;
     private double xMax = 10.0;
     private double yMin = -10.0;
     private double yMax = 10.0;
-
-    private boolean isSelecting = false;
     private int startX, endX;
     private int startY, endY;
 
@@ -54,12 +51,26 @@ public class DrawBlock extends JPanel {
                     startX = e.getX();
                     startY = e.getY();
                     isSelecting = true;
+
+                    if (startX < endX) {
+                        startX = -endX;
+                    }
+                    if (startY < endY) {
+                        startY = -endY;
+                    }
                 }
                 // mouseReleased
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     endX = e.getX();
                     endY = e.getY();
                     isSelecting = false;
+
+                    if (endX < startX) {
+                        endX = -startX;
+                    }
+                    if (endY < startY) {
+                        endY = -startY;
+                    }
 
                 double scaleX = (xMax - xMin) / getWidth();
                 double scaleY = (yMax - yMin) / getHeight();
@@ -78,14 +89,11 @@ public class DrawBlock extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-
         int width = getWidth();
         int height = getHeight();
-        int xScale = (width + 100) / (xValues.size() - 1);
-        int yScale = (height + 100) / (yValues.size() - 1);
 
         ToolKit.drawGrid(g2, width, height);
-        ToolKit.drawFunc(g2, width, height);
+        ToolKit.drawFunc(g2, width, height, a, b);
         ToolKit.drawLgnd(g2, width, height);
         ToolKit.drawAxes(g2, width, height);
     }
