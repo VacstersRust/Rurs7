@@ -25,76 +25,66 @@ public class DrawBlock extends JPanel {
     private boolean isSelecting = false;
     private ArrayList<Integer> xValues;
     private ArrayList<Integer> yValues;
-    private double xMin = -10.0;
-    private double xMax = 10.0;
-    private double yMin = -10.0;
-    private double yMax = 10.0;
     private int startX, endX;
     private int startY, endY;
+    int StartMathX = 0;
+    int StartMathY = 0;
+    int EndMathX = 100;
+    int EndMathY = 100;
 
     public DrawBlock() {
         setBackground(Color.WHITE);
-
-        xValues = new ArrayList<>();
-        yValues = new ArrayList<>();
-
-        for (int i = -100; i <= 100; i++) {
-            xValues.add(i);
-            yValues.add(i * i);
-        }
-
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-            // Получение координат выделенной области
-                // mousePressed
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     startX = e.getX();
                     startY = e.getY();
                     isSelecting = true;
-
-                    if (startX < endX) {
-                        startX = -endX;
-                    }
-                    if (startY < endY) {
-                        startY = -endY;
-                    }
                 }
-                // mouseReleased
+            }
+            public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     endX = e.getX();
                     endY = e.getY();
                     isSelecting = false;
-
-                    if (endX < startX) {
-                        endX = -startX;
-                    }
-                    if (endY < startY) {
-                        endY = -startY;
-                    }
-
-                double scaleX = (xMax - xMin) / getWidth();
-                double scaleY = (yMax - yMin) / getHeight();
-
-                xMin += scaleX * Math.min(startX, endX);
-                xMax -= scaleX * (getWidth() - Math.max(startX, endX));
-                yMin += scaleY * (getHeight() - Math.max(startY, endY));
-                yMax -= scaleY * Math.min(startY, endY);
-                paintComponent(getGraphics());
                 }
+                if (EndMathX == 0){
+                    StartMathX = 0;
+                    StartMathY = 0;
+                    EndMathX = 100;
+                    EndMathY = 100;
+                }
+
+                int Start_XGrid_index = (startX-50) * (Ngrid) / (getWidth()-100)+1;
+                int Start_YGrid_index = (getHeight() - startY - 50) * (Ngrid) / (getHeight()-100)+1;
+                int End_XGrid_index = (endX-50) * (Ngrid) / (getWidth()-100)+1;
+                int End_YGrid_index = (getHeight() - endY - 50) * (Ngrid) / (getHeight()-100)+1;
+
+                int Start_X = ((int) ((Start_XGrid_index-1) * ((float)(EndMathX-StartMathX) / Ngrid)));
+                int End_X   = (End_XGrid_index * ((EndMathX-StartMathX) / Ngrid));
+                int Start_Y = ((int) ((Start_YGrid_index-1) * ((float)(EndMathY-StartMathY) / Ngrid)));
+                int End_Y   = ((End_YGrid_index) * ((EndMathY-StartMathY) / Ngrid));
+
+                StartMathX = Start_X;
+                StartMathY = Start_Y;
+                EndMathX = End_X;
+                EndMathY = End_Y;
+                paintComponent(getGraphics(), Start_X, End_X, Start_Y, End_Y);
             }
         });
     }
 
+
     // Отрисовка графика
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g, int StartMathX, int EndMathX, int StartMathY, int EndMathY) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         int width = getWidth();
         int height = getHeight();
 
         ToolKit.drawGrid(g2, width, height);
-        ToolKit.drawFunc(g2, width, height, a, b);
-        ToolKit.drawLgnd(g2, width, height);
+        ToolKit.drawFunc(g2, width, height, StartMathX, EndMathX, StartMathY, EndMathY);
+        ToolKit.drawLgnd(g2, width, height, StartMathX, EndMathX, StartMathY, EndMathY);
         ToolKit.drawAxes(g2, width, height);
     }
 }

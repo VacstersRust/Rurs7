@@ -12,102 +12,134 @@ public class ToolKit {
     }
 
 
-//     График
-public static void drawFunc(Graphics2D g2, int width, int height, int xs0,int xs1) {
+
+    public static void drawFunc(Graphics2D g2,
+                                int width, int height,
+                                float StartMathX,
+                                float EndMathX,
+                                float StartMathY,
+                                float EndMathY)
+    {
         g2.setColor(FUNC_COLOR);
         g2.setStroke(new BasicStroke(FUNCTION_THICKNESS));
-        float x,y,x0,y0;
+        float x0,x1,y0,y1, x, y;
+        x0 = StartMathX;
+        x1 = EndMathX;
+        y0 = StartMathY;
+        y1 = EndMathY;
+        float new_x;
+        float new_y;
+        x = x0;
+        y = x*x;
+        for (int i = 0; i < COUNT_POINTS; i ++)
+            {
+            new_x = x + (x1-x0)/COUNT_POINTS;
+            new_y = new_x * new_x;
 
-
-//    // Получаемые значения
-//int startX = 0;
-//int endX = 600;
-//int startY = 0;
-//int endY = 400;
-////
-
-
-//dScale = endX - startX;
-
-
-        x0 = xs0;
-        y0 = x0 * x0;
-
-        for (int i = 0; i < Nrange; i++) {
-            x = x0 + ( (xs1-xs0) / (float)Nrange );
-            y = x * x;
-
-            int xWin0 = (int)(x0 * (width - 100) / dScale) + 50;
-            int xWin = (int)(x * (width - 100) / dScale) + 50;
-            int yWin0 = (height - 50) - (int) (y0 * (height - 100) / dScale);
-            int yWin = (height - 50) - (int) (y * (height - 100) / dScale);
-
-// Отсечка верха функции:
-//            if (yWin > 50){
-//                50 = x * x
-//                y = x *x
-//                 y2 = 50
-//                g2.drawLine(xWin0, yWin0, xWin, yWin);
-//              break;
-//            }
-
+            int xWin0   = 50 + (int)(((width - 100) / (x1-x0)) * (x-x0));
+            int xWin    = 50 + (int)(((width - 100) / (x1-x0)) * (new_x-x0));
+            int yWin0   = (height - 50) - (int) ((height - 100) / (y1-y0) * (y-y0));
+            int yWin    = (height - 50) - (int) ((height - 100) / (y1-y0) * (new_y-y0));
+            x = new_x;
+            y = new_y;
             g2.drawLine(xWin0, yWin0, xWin, yWin);
-            x0 = x;
-            y0 = y;
-        }
+            }
     }
-
 
 // Сетка
 public static void drawGrid(Graphics2D g2, int width, int height) {
-    // Вертикальные линии сетки
-    float x = 0;
-    float y = (height-50);
+    float x =  0;
+    float y = 0;
 
-    for (int i = 0; i < Nrange+1; i++) {
+    for (int i = 0; i <= Ngrid; i++) {
         g2.setColor(GRID_COLOR);
         g2.drawLine((int)x + 50, height - 50, (int)x + 50, 50);
-        g2.drawLine(50, (int)y, width - 50, (int)y);
-        x = x + ((width-100) / Nrange);
-        y = y - ((height-100) / Nrange);
+        g2.drawLine(50, height-50+ (int)y, width - 50, height-50+(int)y);
+        x = x + ((width-100) / Ngrid);
+        y = y - ((height-100) / Ngrid);
     }
 }
 
 
     // Легенда
-    public static void drawLgnd(Graphics2D g2, int width, int height) {
+    public static void drawLgnd(Graphics2D g2,
+                                int width, int height,
+                                float StartMathX,
+                                float EndMathX,
+                                float StartMathY,
+                                float EndMathY
+    )
+    {
         g2.drawString("x", width - 20, height - 40);
         g2.drawString("y", 20, 20);
-        int xs0 = 0;
-        int xs1 = 10;
-        float gridx = 0;
-        float gridy = (height-50);
-//        N = 10;
-                for (int i = 0; i < Nrange+1; i++) {
+
+        int gridx = 0;
+        int gridy = (height-50);
+
+        float gx=StartMathX;
+        float gy=StartMathY;
+
+                for (int i = 0; i <= Ngrid; i++) {
             g2.setColor(GRID_COLOR);
-            g2.drawString(String.valueOf((i *(float)dScale / Nrange)), gridx - LABEL_PADDING + 50, height - 20);
-            g2.drawString(String.valueOf((i *(float)dScale / Nrange)), 20,   gridy + LABEL_PADDING);
+            g2.drawString(String.valueOf(gx), gridx - LABEL_PADDING + 50, height - 20);
+            g2.drawString(String.valueOf(gy), 20,   gridy + LABEL_PADDING);
+//            g2.drawString(String.valueOf(a + (i *(float)dScale / (Nrange * Nscale))), gridx - LABEL_PADDING + 50, height - 20);
 
-            gridx = gridx + ((width-100) / Nrange);
-            gridy = gridy - ((height-100) / Nrange);
+            // Координаты на экране
+            gridx = gridx + ((width-100) / Ngrid);
+            gridy = gridy - ((height-100) / Ngrid);
+
+            // Значения сетки
+            gx = (gx + ( (float)(EndMathX - StartMathX) / Ngrid));
+            gy = (gy + ( (float)(EndMathY - StartMathY) / Ngrid));
         }
-
-
-
-// Значение сетки по функции
-//        for (int i = 0; i < N+1; i++) {
-//            g2.setColor(GRID_COLOR);
-//            g2.drawString(String.valueOf(x0), gridx - LABEL_PADDING + 50, height - 20);
-//            g2.drawString(String.valueOf(y0), 20, gridy + LABEL_PADDING);
-//
-//            gridx = gridx + ((width-100) / half);
-//            gridy = gridy - ((height+100) / half);
-//
-//            for (int j = 0; j < (dScale / N) - 1; j++) {
-//
-//                x0 = x0 + ( (xs1-xs0) / N );
-//                y0 = x0 * x0;
-//            }
-//        }
     }
 }
+
+//
+////     График
+//public static void drawFunc(Graphics2D g2, int width, int height, int xs0,int xs1) {
+//        g2.setColor(FUNC_COLOR);
+//        g2.setStroke(new BasicStroke(FUNCTION_THICKNESS));
+//        float x,y,x0,y0;
+//
+////    // Получаемые значения
+////int startX = 0;
+////int endX = 600;
+////int startY = 0;
+////int endY = 400;
+//////
+//
+////dScale = endX - startX;
+//
+//        x0 = xs0;
+//        y0 = x0 * x0;
+//
+//        ;
+//
+//        for (int i = 0; i < Nrange; i++) {
+//            x = x0 + ( (xs1-xs0) / (float)Nrange );
+//            y = x * x;
+//
+//            int xWin0 = (int)((x0-a)* (width - 100) / dScale) + 50;
+//            int xWin = (int)((x-a) * (width - 100) / dScale) + 50;
+//            int yWin0 = (height - 50) - (int) (y0 * (height - 100) / dScale);
+//            int yWin = (height - 50) - (int) (y * (height - 100) / dScale);
+//
+//
+//
+//
+//// Отсечка верха функции:
+////            if (yWin > 50){
+////                50 = x * x
+////                y = x *x
+////                 y2 = 50
+////                g2.drawLine(xWin0, yWin0, xWin, yWin);
+////              break;
+////            }
+//
+//            g2.drawLine(xWin0, yWin0, xWin, yWin);
+//            x0 = x;
+//            y0 = y;
+//        }
+//    }
