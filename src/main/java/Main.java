@@ -1,10 +1,6 @@
-package org.example;
-import org.example.block.BaseBlock;
+import block.BaseBlock;
 
 import javax.swing.*;
-// import java.awt.*;
-
-import static org.example.GlobalConstants.*;
 
 public class Main {
 
@@ -17,6 +13,7 @@ public class Main {
         // Добавление базового блока:
         BaseBlock baseBlock = new BaseBlock();
         frame.add(baseBlock);
+//        frame.pack();
         frame.setVisible(true);
     }
 }
