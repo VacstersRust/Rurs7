@@ -1,5 +1,7 @@
 package tools;
 
+import block.DrawBlock;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -7,10 +9,10 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+
+
 
 public class DirectoryTree {
     private JPanel directoryTreePanel;
@@ -18,13 +20,20 @@ public class DirectoryTree {
     private DefaultMutableTreeNode root;
     private String selectedFilePath;
     private FileSelectedListener fileSelectedListener;
+    private DrawBlock drawBlock;
+
 
     public DirectoryTree() {
         directoryTreePanel = createDirectoryTreePanel();
+        drawBlock = new DrawBlock(); // Инициализируем DrawBlock здесь
     }
 
     public JPanel getDirectoryTreePanel() {
         return directoryTreePanel;
+    }
+
+    public DrawBlock getDrawBlock() {
+        return drawBlock;
     }
 
     public void createDirectoryTreeFromPath(String path) {
@@ -41,6 +50,7 @@ public class DirectoryTree {
 
     private JPanel createDirectoryTreePanel() {
         JPanel panel = new JPanel(new BorderLayout());
+        drawBlock = new DrawBlock();
 
         root = new DefaultMutableTreeNode("D:\\Programs\\programming\\Java");
         tree = new JTree(root);
@@ -86,59 +96,24 @@ public class DirectoryTree {
                         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selPath.getLastPathComponent();
                         File file = new File(getFilePath(selectedNode));
                         if (file.isFile()) {
-                            openFile(file);
-                        }
-                    }
-                }
-            }
-            //start
-            private void openFile(File file) {
-                String fileName = file.getName();
-                String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
+                            String fileName = file.getName();
+                            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-                String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
-                boolean isAllowedExtension = false;
-                for (String extension : allowedExtensions) {
-                    if (fileExtension.equals(extension)) {
-                        isAllowedExtension = true;
-                        break;
-                    }
-                }
-
-                if (!isAllowedExtension) {
-                    JOptionPane.showMessageDialog(tree, "Поддерживаются только файлы с разрешениями: .dat, .f0a, .f1a, .f2a", "Ошибка", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Прочитать и обработать файл
-                if (file.exists()) {
-                    try {
-                        FileReader fileReader = new FileReader(file);
-                        BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-                        // Чтение и обработка данных из файла
-                        StringBuilder content = new StringBuilder();
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            content.append(line).append("\n");
-                        }
-
-                        // Парсинг данных в массив для отрисовки графика
-                        double[][] parsedData = FileDataReader.parseData(content.toString());
-                        if (parsedData != null) {
-                            if (fileSelectedListener != null) {
-                                fileSelectedListener.onFileSelected(file.getAbsolutePath());
+                            String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
+                            boolean isAllowedExtension = false;
+                            for (String extension : allowedExtensions) {
+                                if (fileExtension.equals(extension)) {
+                                    isAllowedExtension = true;
+                                    drawBlock.drawGraph(FileDataReader.readFileData(String.valueOf(file), fileExtension));
+                                    break;
+                                }
                             }
-                        } else {
-                            JOptionPane.showMessageDialog(tree, "Ошибка чтения данных из файла", "Ошибка", JOptionPane.ERROR_MESSAGE);
-                        }
 
-                        bufferedReader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            if (!isAllowedExtension) {
+                                JOptionPane.showMessageDialog(tree, "Поддерживаются только файлы с разрешениями: .dat, .f0a, .f1a, .f2a", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
                     }
-                } else {
-                    JOptionPane.showMessageDialog(tree, "Файл не существует: " + file.getAbsolutePath(), "Ошибка", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -267,7 +242,7 @@ public class DirectoryTree {
     }
 
     public interface FileSelectedListener {
-        void onFileSelected(String filePath);
+        void onFileSelected(String filePath, String fileExtension);
     }
 
     // Установка слушателя FileSelectedListener
@@ -275,3 +250,5 @@ public class DirectoryTree {
         this.fileSelectedListener = listener;
     }
 }
+
+

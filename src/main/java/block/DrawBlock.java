@@ -1,13 +1,16 @@
 package block;
 
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.DefaultXYDataset;
 
 import javax.swing.*;
 import java.awt.*;
+
+
+
 
 public class DrawBlock extends JPanel {
     private DefaultXYDataset dataset; // Сохраняем ссылку на объект данных
@@ -27,7 +30,7 @@ public class DrawBlock extends JPanel {
                 true,
                 false
         );
-// Перемещение "Ctrl + Mouse1"
+
         chart.getXYPlot().setDomainPannable(true);
         chart.getXYPlot().setRangePannable(true);
 
@@ -40,15 +43,8 @@ public class DrawBlock extends JPanel {
 
     public void drawGraph(double[][] data) {
         if (dataset != null) {
-            // Подготовка массива данных для JFreeChart
-            double[][] seriesData = new double[2][data.length];
-            for (int i = 0; i < data.length; i++) {
-                seriesData[0][i] = data[i][0]; // X координаты
-                seriesData[1][i] = data[i][1]; // Y координаты
-            }
-
-            dataset.addSeries("Data", seriesData); // Добавление новых данных к существующему набору
-            repaint(); // Перерисовка графика
+            dataset.addSeries("Data", data); // Используем переданные данные для построения графика
+            repaint(); // Перерисовываем график
         }
     }
 }
