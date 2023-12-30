@@ -8,8 +8,7 @@ import java.util.*;
 
 public class FileDataReader {
 
-
-    public static double[][] readFileData(String filePath, String fileExtension) {
+    public static List<double[][]> readFileData(String filePath, String fileExtension) {
         try {
             StringBuilder content = new StringBuilder();
             FileReader fileReader = new FileReader(filePath);
@@ -31,20 +30,22 @@ public class FileDataReader {
         return null;
     }
 
-    public static double[][] parseData(String data, String fileExtension) {
+    public static List<double[][]> parseData(String data, String fileExtension) {
         if (fileExtension != null) {
             if (fileExtension.equals("dat") || fileExtension.equals("f1a")) {
-                return parseDatOrF1A(data);
+                List<double[][]> parsedDataList = new ArrayList<>();
+                parsedDataList.add(parseDatOrF1A(data));
+                return parsedDataList;
             } else if (fileExtension.equals("f0a")) {
-                return parseF0A(data);
+                List<double[][]> parsedDataList = new ArrayList<>();
+                parsedDataList.add(parseF0A(data));
+                return parsedDataList;
             } else if (fileExtension.equals("f2a")) {
                 return parseF2A(data);
             }
         }
         return null; // Обработка других типов файлов или ошибок
     }
-
-// Методы парсинга для различных типов файлов
 
     private static double[][] parseDatOrF1A(String data) {
         String[] lines = data.split("\\n");
@@ -67,7 +68,6 @@ public class FileDataReader {
         }
         return parsedData;
     }
-
 
     private static Map<String, List<Map<String, String>>> parseF0AData(String data) {
         String[] lines = data.split("\\n");
@@ -102,7 +102,6 @@ public class FileDataReader {
         return parameters;
     }
 
-
     public static double[][] parseF0A(String data) {
         Map<String, List<Map<String, String>>> parameters = parseF0AData(data);
 
@@ -128,15 +127,15 @@ public class FileDataReader {
             double x = x0;
 
             for (int i = 0; i < countPoints; i++) {
-                 // Вычисление точек x в диапазоне x0-x1
+                // Вычисление точек x в диапазоне x0-x1
                 double y = 0;
                 int var_num = 0;
                 // Перебор всех переменных и подсчет функции для текущего x
                 for (Map<String, String> variableMap : variables) {
-                        for (Map.Entry<String, String> entry : variableMap.entrySet()) {
-                            String value = entry.getValue();
-                            y += Math.pow(x, var_num) * Double.parseDouble(value); // Расчет функции y для текущего x и переменной
-                            var_num++;
+                    for (Map.Entry<String, String> entry : variableMap.entrySet()) {
+                        String value = entry.getValue();
+                        y += Math.pow(x, var_num) * Double.parseDouble(value); // Расчет функции y для текущего x и переменной
+                        var_num++;
                     }
                 }
 
@@ -149,10 +148,44 @@ public class FileDataReader {
         return null;
     }
 
+    private static List<double[][]> parseF2A(String data) {
+        List<double[][]> result = new ArrayList<>();
 
-    private static double[][] parseF2A(String data) {
-        // Реализация парсинга для f2a
-        // ...
-        return null;
+        String[] lines = data.split("\n");
+        double[][] tempArray = null;
+        List<Double> pressures = new ArrayList<>();
+        List<Double> viscosities = new ArrayList<>();
+
+        for (String line : lines) {
+            if (line.startsWith("#") || line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] elements = line.trim().split("\\s+");
+
+            if (elements.length == 1) {
+                if (tempArray != null) {
+                    tempArray[0] = pressures.stream().mapToDouble(Double::doubleValue).toArray();
+                    tempArray[1] = viscosities.stream().mapToDouble(Double::doubleValue).toArray();
+                    result.add(tempArray);
+                }
+
+                tempArray = new double[2][];
+                pressures.clear();
+                viscosities.clear();
+            } else if (elements.length == 2) {
+                pressures.add(Double.parseDouble(elements[0]));
+                viscosities.add(Double.parseDouble(elements[1]));
+            }
+        }
+
+        // Добавляем последние данные, если они остались
+        if (tempArray != null && !pressures.isEmpty() && !viscosities.isEmpty()) {
+            tempArray[0] = pressures.stream().mapToDouble(Double::doubleValue).toArray();
+            tempArray[1] = viscosities.stream().mapToDouble(Double::doubleValue).toArray();
+            result.add(tempArray);
+        }
+
+        return result;
     }
 }

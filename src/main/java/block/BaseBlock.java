@@ -20,11 +20,11 @@ public class BaseBlock extends JPanel {
         directoryTree = new DirectoryTree();
         drawBlock = directoryTree.getDrawBlock(); // Получаем объект DrawBlock из DirectoryTree
 
+
         // Создание разделителя JSplitPane
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, directoryTree.getDirectoryTreePanel(), drawBlock);
         splitPane.setResizeWeight(0.2);
         splitPane.setContinuousLayout(true);
-
         add(splitPane, BorderLayout.CENTER);
 
         // Панель управления:

@@ -103,8 +103,9 @@ public class DirectoryTree {
                             boolean isAllowedExtension = false;
                             for (String extension : allowedExtensions) {
                                 if (fileExtension.equals(extension)) {
-                                    isAllowedExtension = true;
+
                                     drawBlock.drawGraph(FileDataReader.readFileData(String.valueOf(file), fileExtension));
+                                    isAllowedExtension = true;
                                     break;
                                 }
                             }
