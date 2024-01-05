@@ -25,7 +25,7 @@ public class DirectoryTree {
 
     public DirectoryTree() {
         directoryTreePanel = createDirectoryTreePanel();
-        drawBlock = new DrawBlock(); // Инициализируем DrawBlock здесь
+        drawBlock = new DrawBlock();
     }
 
     public JPanel getDirectoryTreePanel() {
@@ -104,7 +104,7 @@ public class DirectoryTree {
                             for (String extension : allowedExtensions) {
                                 if (fileExtension.equals(extension)) {
 
-                                    drawBlock.drawGraph(FileDataReader.readFileData(String.valueOf(file), fileExtension));
+                                    drawBlock.setGraph(FileDataReader.readFileData(String.valueOf(file), fileExtension));
                                     isAllowedExtension = true;
                                     break;
                                 }
@@ -118,7 +118,6 @@ public class DirectoryTree {
                 }
             }
         });
-
 
         panel.add(new JScrollPane(tree), BorderLayout.CENTER);
         return panel;

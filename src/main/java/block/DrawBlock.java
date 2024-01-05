@@ -10,23 +10,22 @@ import org.jfree.data.xy.DefaultXYDataset;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class DrawBlock extends JPanel {
     private JFreeChart chart;
     private ChartPanel chartPanel;
     private DefaultXYDataset dataset;
-    private float lineThickness = 1.8f; // Переменная для хранения толщины линии
+    private float lineThickness = 1.8f;
 
     public DrawBlock() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
         chart = ChartFactory.createXYLineChart(
-                "File Data Chart", // Заголовок графика
-                "X", // Название оси X
-                "Y", // Название оси Y
-                null, // Пустой dataset
+                "File Data Chart",
+                "X",
+                "Y",
+                null,
                 PlotOrientation.VERTICAL,
                 true,
                 true,
@@ -44,33 +43,45 @@ public class DrawBlock extends JPanel {
         add(chartPanel, BorderLayout.CENTER);
     }
 
-    public void setLineThickness(float thickness) {
-        lineThickness = thickness;
-        XYPlot plot = chart.getXYPlot();
-        XYItemRenderer renderer = plot.getRenderer();
 
-        for (int i = 0; i < dataset.getSeriesCount(); i++) {
-            renderer.setSeriesStroke(i, new BasicStroke(lineThickness));
-        }
+    public void setGraph(String[][] data) {
+
     }
 
-    public void drawGraph(List<double[][]> data) {
-        dataset = new DefaultXYDataset(); // Создаем новый dataset
+    public void drawGraph( String[][] data) {
+        dataset = new DefaultXYDataset();
 
         int seriesCount = 1;
-        for (double[][] dataSet : data) {
-            dataset.addSeries("Data" + seriesCount++, dataSet); // Используем переданные данные для построения графиков
-        }
+            double[][] xyData = extractXYFromDataSet(data);
+            dataset.addSeries("Data" + seriesCount++, xyData);
 
-        chart.getXYPlot().setDataset(dataset); // Устанавливаем новый dataset для отображения новых графиков
 
-        // Установка толщины линий для каждой серии
+        chart.getXYPlot().setDataset(dataset);
         XYItemRenderer renderer = chart.getXYPlot().getRenderer();
-        BasicStroke stroke = new BasicStroke(lineThickness); // Устанавливаем толщину линии
+        BasicStroke stroke = new BasicStroke(lineThickness);
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
             renderer.setSeriesStroke(i, stroke);
         }
+        repaint();
+    }
 
-        repaint(); // Перерисовываем график
+    private double[][] extractXYFromDataSet(String[][] dataSet) {
+        String[][] xyStrings = {dataSet[1], dataSet[2]};
+        return parseStringToDouble(xyStrings);
+    }
+    private double[][] parseStringToDouble(String[][] strings) {
+        double[][] result = new double[strings.length][];
+        for (int i = 0; i < strings.length; i++) {
+            result[i] = new double[strings[i].length];
+            for (int j = 0; j < strings[i].length; j++) {
+                try {
+                    result[i][j] = Double.parseDouble(strings[i][j]);
+                } catch (NumberFormatException e) {
+                    // Обработка ошибок при парсинге
+                    result[i][j] = Double.NaN; // Или другое значение по умолчанию при ошибке
+                }
+            }
+        }
+        return result;
     }
 }
