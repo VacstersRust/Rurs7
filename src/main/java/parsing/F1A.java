@@ -17,7 +17,7 @@ public class F1A {
                 e.printStackTrace();}
             }
         }
-        parsedData[0][0] = "График";
+        parsedData[0][0] = " f1a";
         parsedData[0][1] = "Икс";
         parsedData[0][2] = "Игрик";
         return parsedData;

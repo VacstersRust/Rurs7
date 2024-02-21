@@ -19,9 +19,8 @@ public class DirectoryTree {
     private JTree tree;
     private DefaultMutableTreeNode root;
     private String selectedFilePath;
-    private FileSelectedListener fileSelectedListener;
     private DrawBlock drawBlock;
-
+    private String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
 
     public DirectoryTree() {
         directoryTreePanel = createDirectoryTreePanel();
@@ -51,8 +50,7 @@ public class DirectoryTree {
     private JPanel createDirectoryTreePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         drawBlock = new DrawBlock();
-
-        root = new DefaultMutableTreeNode("D:\\Programs\\programming\\Java");
+        root = new DefaultMutableTreeNode("Выберите папку (кн. File)");
         tree = new JTree(root);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
@@ -89,7 +87,8 @@ public class DirectoryTree {
                         menu.show(tree, e.getX(), e.getY());
                     }
                 }
-                //start
+
+                // Обработчик нажатия на файл
                 if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
                     TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
                     if (selPath != null) {
@@ -99,11 +98,11 @@ public class DirectoryTree {
                             String fileName = file.getName();
                             String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-                            String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
+
                             boolean isAllowedExtension = false;
                             for (String extension : allowedExtensions) {
                                 if (fileExtension.equals(extension)) {
-
+                                    // передаём файл
                                     drawBlock.setGraph(FileDataReader.readFileData(String.valueOf(file), fileExtension));
                                     isAllowedExtension = true;
                                     break;
@@ -124,31 +123,32 @@ public class DirectoryTree {
     }
 
 
-    private void addNodes(DefaultMutableTreeNode rootNode, File directory) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                String name = file.getName();
-                DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
-                rootNode.add(node);
-
-                if (file.isDirectory()) {
-                    addSubNodes(node, file);
-                }
-            }
-        }
-    }
-
-    private void addSubNodes(DefaultMutableTreeNode rootNode, File parentDirectory) {
+    private void addNodes(DefaultMutableTreeNode rootNode, File parentDirectory) {
         File[] files = parentDirectory.listFiles();
         if (files != null) {
             for (File file : files) {
                 String name = file.getName();
-                DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
-                rootNode.add(node);
 
+                // Проверяем, является ли файл папкой
                 if (file.isDirectory()) {
-                    addNodes(node, file);
+                    DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
+
+                    addNodes(node, file); // Рекурсивный вызов для поддиректорий
+
+                    if (node.getChildCount() > 0) {
+                        rootNode.add(node);
+                    }
+                } else {
+                    String fileExtension = name.substring(name.lastIndexOf(".") + 1);
+
+                    // Проверяем, соответствует ли расширение файла одному из разрешенных
+                    for (String extension : allowedExtensions) {
+                        if (fileExtension.equals(extension)) {
+                            DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
+                            rootNode.add(node);
+                            break; // Прерываем цикл, если файл соответствует одному из разрешенных расширений
+                        }
+                    }
                 }
             }
         }
@@ -239,15 +239,6 @@ public class DirectoryTree {
 
     private void refreshTree() {
         createDirectoryTreeFromPath(selectedFilePath);
-    }
-
-    public interface FileSelectedListener {
-        void onFileSelected(String filePath, String fileExtension);
-    }
-
-    // Установка слушателя FileSelectedListener
-    public void setFileSelectedListener(FileSelectedListener listener) {
-        this.fileSelectedListener = listener;
     }
 }
 

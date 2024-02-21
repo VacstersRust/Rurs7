@@ -19,9 +19,9 @@ public class F2A {
 
         // Добавим пример метаданных
         metadata.add("Experiment 1");
-        metadata.add("Sample A");
-        metadata.add("Date: 2024-01-04");
-        metadata.add("Technician: John Doe");
+        metadata.add("Температура");
+        metadata.add("Вязкость");
+        metadata.add("Давление");
         resultData.add(metadata.toArray(new String[0]));
 
         for (String line : lines) {
