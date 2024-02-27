@@ -3,13 +3,10 @@ package block;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
-import org.jfree.data.xy.XYDataset;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,9 +18,7 @@ public class DrawBlock extends JPanel {
     private DefaultXYDataset dataset;
     private float lineThickness = 1.8f;
     private Map<String, String[][]> dataSetMap = new HashMap<>(); // Инициализируем dataSetMap здесь
-    private String currentDataSet = "температура"; // Переменная для отслеживания текущего набора данных
-
-
+    public String[][] currentData;
 
     public DrawBlock() {
         setLayout(new BorderLayout());
@@ -49,17 +44,61 @@ public class DrawBlock extends JPanel {
         chartPanel.setPreferredSize(new Dimension(800, 600));
 
         add(chartPanel, BorderLayout.CENTER);
+
     }
 
-    public void setGraph(String[][] data) {
+    public void putData(String[][] data) {
         clearGraph();
-        currentDataSet = "температура"; // Установите текущий набор данных
-        prepareDataSet(this, data, currentDataSet); // Передаем текущий набор данных
+        String dataType = data[0][0].trim();
+        currentData = data;
+        switch (dataType) {
+            case "f0a":
+                get_f0a();
+                break;
+            case "f1a":
+                get_f1a();
+                break;
+            case "f2a":
+                get_f2a();
+                break;
+            default:
+                System.out.println("Unknown data type: " + dataType);
+                break;
+        }
+    }
+
+    private void get_f0a() {
+        drawGraph(currentData, "name graph for f0a");;
+    }
+
+    private void get_f1a() {
+        drawGraph(currentData, "name graph for f1a");
+    }
+
+    private void get_f2a() {
+        prepareDataSet(this, currentData);
+            private static void addButton() {
+        // Создание кнопки переключения
+        JToggleButton toggleButton = new JToggleButton("Температура/Давление");
+        toggleButton.setSelected(true); // Устанавливаем состояние "Температура" по умолчанию
+        toggleButton.addActionListener(e -> {
+            if (toggleButton.isSelected()) {
+                createMap(this, data, data[1], data[2], data[3], dataSetMap);
+            } else {
+                createMap(this, data, data[2], data[1], data[3], dataSetMap);
+            }
+            System.out.println("Switch parameter changed to: " + switchParam);
+
+        });
+        this.add(toggleButton, BorderLayout.NORTH); // Добавляем кнопку в верхнюю часть панели
+    }
     }
 
 
 
-    public static Map<String, String[][]> prepareDataSet(DrawBlock instance, String[][] data, String switchParam) {
+
+    // Выбор серии данных для мультиграфика
+    public static Map<String, String[][]> prepareDataSet(DrawBlock instance, String[][] data) {
         Map<String, String[][]> dataSetMap = new HashMap<>();
         // 1 Температура
         // 2 Давление
@@ -72,19 +111,6 @@ public class DrawBlock extends JPanel {
         return dataSetMap;
     }
 
-
-    public void drawGraph(String[][] data, String graph_name) {
-        double[][] xyData = extractXYFromDataSet(data);
-        dataset.addSeries(graph_name, xyData);
-
-        chart.getXYPlot().setDataset(dataset);
-        XYItemRenderer renderer = chart.getXYPlot().getRenderer();
-        BasicStroke stroke = new BasicStroke(lineThickness);
-        for (int i = 0; i < dataset.getSeriesCount(); i++) {
-            renderer.setSeriesStroke(i, stroke);
-        }
-        repaint();
-    }
 
     private double[][] extractXYFromDataSet(String[][] dataSet) {
         int dataSize = dataSet.length;
@@ -106,6 +132,7 @@ public class DrawBlock extends JPanel {
         return result;
     }
 
+    // Переделывает data общий в данные для графика
     private static void createMap(DrawBlock instance, String[][] data, String[] keyArray, String[] value1Array, String[] value2Array, Map<String, String[][]> dataSetMap) {
         Map<String, Map<String, String>> mapData = new HashMap<>();
 
@@ -136,6 +163,21 @@ public class DrawBlock extends JPanel {
             dataSetMap.put(keyValue, valueArray);
         }
     }
+
+    // Отрисовка графика по х у
+    public void drawGraph(String[][] data, String graph_name) {
+        double[][] xyData = extractXYFromDataSet(data);
+        dataset.addSeries(graph_name, xyData);
+
+        chart.getXYPlot().setDataset(dataset);
+        XYItemRenderer renderer = chart.getXYPlot().getRenderer();
+        BasicStroke stroke = new BasicStroke(lineThickness);
+        for (int i = 0; i < dataset.getSeriesCount(); i++) {
+            renderer.setSeriesStroke(i, stroke);
+        }
+        repaint();
+    }
+
 
     public void clearGraph() {
         dataset = new DefaultXYDataset();

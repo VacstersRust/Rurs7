@@ -33,4 +33,5 @@ public class BaseBlock extends JPanel {
         settingsBlock.setBackground(Color.LIGHT_GRAY);
         add(settingsBlock, BorderLayout.NORTH);
     }
+
 }

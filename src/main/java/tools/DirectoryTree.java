@@ -103,7 +103,7 @@ public class DirectoryTree {
                             for (String extension : allowedExtensions) {
                                 if (fileExtension.equals(extension)) {
                                     // передаём файл
-                                    drawBlock.setGraph(FileDataReader.readFileData(String.valueOf(file), fileExtension));
+                                    drawBlock.putData(FileDataReader.readFileData(String.valueOf(file), fileExtension));
                                     isAllowedExtension = true;
                                     break;
                                 }

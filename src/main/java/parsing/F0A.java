@@ -10,7 +10,7 @@ public class F0A {
 
         // Добавим пример метаданных
         List<String> metadata = new ArrayList<>();
-        metadata.add("Experiment 1");
+        metadata.add("f0a");
         metadata.add("Sample A");
         metadata.add("Date: 2024-01-04");
         metadata.add("Technician: John Doe");

@@ -18,7 +18,7 @@ public class F2A {
         // Записываем метаданные для графика в список metadata
 
         // Добавим пример метаданных
-        metadata.add("Experiment 1");
+        metadata.add("f2a");
         metadata.add("Температура");
         metadata.add("Вязкость");
         metadata.add("Давление");
