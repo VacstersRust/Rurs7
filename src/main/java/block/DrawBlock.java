@@ -51,6 +51,7 @@ public class DrawBlock extends JPanel {
         clearGraph();
         String dataType = data[0][0].trim();
         currentData = data;
+        clearGraph();
         switch (dataType) {
             case "f0a":
                 get_f0a();
@@ -79,16 +80,19 @@ public class DrawBlock extends JPanel {
         prepareDataSet(this, currentData);
         // Создание кнопки переключения
         JToggleButton toggleButton = new JToggleButton("Температура/Давление");
-        toggleButton.setSelected(true); // Устанавливаем состояние "Температура" по умолчанию
+        toggleButton.setSelected(true);// Устанавливаем состояние "Температура" по умолчанию
         toggleButton.addActionListener(e -> {
             if (toggleButton.isSelected()) {
+                clearGraph();
                 createMap(this, null, currentData[1], currentData[2], currentData[3], dataSetMap);
             } else {
+                clearGraph();
                 createMap(this, null, currentData[2], currentData[1], currentData[3], dataSetMap);
             }
 
         });
-        add(toggleButton, BorderLayout.NORTH); // Добавляем кнопку в верхнюю часть панели
+        add(toggleButton, BorderLayout.SOUTH);
+        toggleButton.setVisible(true);
     }
 
 
