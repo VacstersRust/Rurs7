@@ -68,7 +68,7 @@ public class DrawBlock extends JPanel {
     }
 
     private void get_f0a() {
-        drawGraph(currentData, "name graph for f0a");;
+        drawGraph(currentData, "name graph for f0a");
     }
 
     private void get_f1a() {
@@ -77,22 +77,20 @@ public class DrawBlock extends JPanel {
 
     private void get_f2a() {
         prepareDataSet(this, currentData);
-            private static void addButton() {
         // Создание кнопки переключения
         JToggleButton toggleButton = new JToggleButton("Температура/Давление");
         toggleButton.setSelected(true); // Устанавливаем состояние "Температура" по умолчанию
         toggleButton.addActionListener(e -> {
             if (toggleButton.isSelected()) {
-                createMap(this, data, data[1], data[2], data[3], dataSetMap);
+                createMap(this, null, currentData[1], currentData[2], currentData[3], dataSetMap);
             } else {
-                createMap(this, data, data[2], data[1], data[3], dataSetMap);
+                createMap(this, null, currentData[2], currentData[1], currentData[3], dataSetMap);
             }
-            System.out.println("Switch parameter changed to: " + switchParam);
 
         });
-        this.add(toggleButton, BorderLayout.NORTH); // Добавляем кнопку в верхнюю часть панели
+        add(toggleButton, BorderLayout.NORTH); // Добавляем кнопку в верхнюю часть панели
     }
-    }
+
 
 
 
@@ -103,11 +101,7 @@ public class DrawBlock extends JPanel {
         // 1 Температура
         // 2 Давление
         // 3 Вязкость
-        if ("температура".equalsIgnoreCase(switchParam)) {
-            createMap(instance, data, data[1], data[2], data[3], dataSetMap);
-        } else if ("давление".equalsIgnoreCase(switchParam)) {
-            createMap(instance, data, data[2], data[1], data[3], dataSetMap);
-        }
+
         return dataSetMap;
     }
 

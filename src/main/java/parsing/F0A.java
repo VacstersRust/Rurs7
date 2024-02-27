@@ -48,7 +48,6 @@ public class F0A {
                                 Math.pow(P, Integer.parseInt(variableMap.get("T_index")));
                     }
                 }
-
                 parsedData[0][i] = i;
                 parsedData[1][i] = P;
                 parsedData[2][i] = T;
