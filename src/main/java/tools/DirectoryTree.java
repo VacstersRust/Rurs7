@@ -15,12 +15,12 @@ import java.io.IOException;
 
 
 public class DirectoryTree {
-    private JPanel directoryTreePanel;
+    private final JPanel directoryTreePanel;
     private JTree tree;
     private DefaultMutableTreeNode root;
     private String selectedFilePath;
     private DrawBlock drawBlock;
-    private String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
+    private final String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
 
     public DirectoryTree() {
         directoryTreePanel = createDirectoryTreePanel();

@@ -28,7 +28,7 @@ public class F0A {
 
         if (selectedParam != null) {
             List<Map<String, String>> variables = parameters.get(selectedParam);
-            int countPoints = 250;
+            int countPoints = 25;
             double P = 0;
             double T = 0;
             double[][] parsedData = new double[4][countPoints];
@@ -52,6 +52,7 @@ public class F0A {
                 parsedData[1][i] = P;
                 parsedData[2][i] = T;
                 parsedData[3][i] = y;
+
                 P = P0_value + (P1_value - P0_value) * ((double) i / (countPoints));
                 T = T0_value + (T1_value - T0_value) * ((double) i / (countPoints));
             }
@@ -59,19 +60,17 @@ public class F0A {
 
             String[][] resultData = new String[4][countPoints];
 
+
 // Записываем метаданные в resultData[0][]
             for (int i = 0; i < metadata.size(); i++) {
                 resultData[0][i] = metadata.get(i);
             }
-
 // Остальные данные
             for (int i = 1; i < 4; i++) {
                 for (int j = 0; j < countPoints; j++) {
                     resultData[i][j] = String.valueOf(parsedData[i][j]);
                 }
             }
-
-
             return resultData;
         }
         return null;
