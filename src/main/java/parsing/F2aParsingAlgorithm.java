@@ -3,8 +3,10 @@ package parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class F2A {
-    public static String[][] main(String data) {
+public class F2aParsingAlgorithm implements ParsingAlgorithm {
+
+    private final DataType DATA_TYPE = DataType.F2A;
+    public String[][] parse(String data) {
         List<String[]> resultData = new ArrayList<>();
 
         List<String> temperatures = new ArrayList<>();
@@ -58,5 +60,10 @@ public class F2A {
 
         // Возвращаем результат
         return result.length > 0 ? result : null;
+    }
+
+    @Override
+    public boolean canProcessThisType(DataType dataType) {
+        return this.DATA_TYPE.equals(dataType);
     }
 }

@@ -105,7 +105,10 @@ public class DrawBlock extends JPanel {
         // ++++++++
 
         // Очистка графика
-        try {remove(toggleButton);} catch (NullPointerException ex) {}
+        try {
+            remove(toggleButton);
+        }
+        catch (NullPointerException ignored) {}
         clearGraph();
         String dataType = data[0][0].trim();
         currentData = data;

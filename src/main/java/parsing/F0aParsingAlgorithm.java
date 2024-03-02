@@ -1,11 +1,17 @@
 package parsing;
 
 import javax.swing.*;
-import java.util.*;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class F0A {
-    // Диапазон P(0-600Atmosp), T (-100+350)
-    public static String[][] main(String data) {
+public class F0aParsingAlgorithm implements ParsingAlgorithm {
+
+    private final DataType DATA_TYPE = DataType.F0A;
+    @Override
+    public String[][] parse(String data) {
         Map<String, List<Map<String, String>>> parameters = parseF0AData(data);
 
         // Добавим пример метаданных
@@ -75,7 +81,6 @@ public class F0A {
         }
         return null;
     }
-
 
     private static Map<String, List<Map<String, String>>> parseF0AData(String data) {
         String[] lines = data.split("\\n");
@@ -156,5 +161,10 @@ public class F0A {
         }
 
         return index;
+    }
+
+    @Override
+    public boolean canProcessThisType(DataType dataType) {
+        return this.DATA_TYPE.equals(dataType);
     }
 }

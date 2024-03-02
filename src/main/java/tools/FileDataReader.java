@@ -1,12 +1,22 @@
 package tools;
 
+import parsing.DataType;
+import parsing.ParsingAlgorithmFactory;
+
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
     public class FileDataReader {
 
-        public static String[][] readFileData(String filePath, String fileExtension) {
+        private final ParsingAlgorithmFactory parsingAlgorithmFactory;
+
+        public FileDataReader() {
+            this.parsingAlgorithmFactory = new ParsingAlgorithmFactory();
+        }
+
+        public String[][] readFileData(String filePath, DataType fileExtension) {
         try {
             StringBuilder content = new StringBuilder();
             FileReader fileReader = new FileReader(filePath);
@@ -26,15 +36,9 @@ import java.io.IOException;
         return null;
     }
 
-    public static String[][] parseData(String data, String fileExtension) {
+    public String[][] parseData(String data, DataType fileExtension) {
         if (fileExtension != null) {
-            if (fileExtension.equals("dat") || fileExtension.equals("f1a")) {
-                return parsing.F1A.main(data);
-            } else if (fileExtension.equals("f0a")) {
-                return parsing.F0A.main(data);
-            } else if (fileExtension.equals("f2a")) {
-                return parsing.F2A.main(data);
-            }
+            return parsingAlgorithmFactory.getAlgorithm(fileExtension).parse(data);
         }
         return null;
     }

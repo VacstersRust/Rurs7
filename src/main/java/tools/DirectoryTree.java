@@ -1,6 +1,8 @@
 package tools;
 
 import block.DrawBlock;
+import parsing.DataType;
+import parsing.DataTypeFactory;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -20,11 +22,17 @@ public class DirectoryTree {
     private DefaultMutableTreeNode root;
     private String selectedFilePath;
     private DrawBlock drawBlock;
+
+    private final FileDataReader fileDataReader;
+
+    private final DataTypeFactory dataTypeFactory;
     private final String[] allowedExtensions = {"dat", "f0a", "f1a", "f2a"};
 
     public DirectoryTree() {
+        dataTypeFactory = new DataTypeFactory();
         directoryTreePanel = createDirectoryTreePanel();
         drawBlock = new DrawBlock();
+        fileDataReader = new FileDataReader();
     }
 
     public JPanel getDirectoryTreePanel() {
@@ -96,22 +104,13 @@ public class DirectoryTree {
                         File file = new File(getFilePath(selectedNode));
                         if (file.isFile()) {
                             String fileName = file.getName();
-                            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-
-                            boolean isAllowedExtension = false;
-                            for (String extension : allowedExtensions) {
-                                if (fileExtension.equals(extension)) {
-                                    // передаём файл
-                                    drawBlock.putData(FileDataReader.readFileData(String.valueOf(file), fileExtension));
-                                    isAllowedExtension = true;
-                                    break;
-                                }
-                            }
-
-                            if (!isAllowedExtension) {
+                            DataType fileExtension = dataTypeFactory.getType(fileName.substring(fileName.lastIndexOf(".") + 1));
+                            if (fileExtension == null)
                                 JOptionPane.showMessageDialog(tree, "Поддерживаются только файлы с разрешениями: .dat, .f0a, .f1a, .f2a", "Ошибка", JOptionPane.ERROR_MESSAGE);
-                            }
+
+
+                            drawBlock.putData(fileDataReader.readFileData(String.valueOf(file), fileExtension));
+
                         }
                     }
                 }

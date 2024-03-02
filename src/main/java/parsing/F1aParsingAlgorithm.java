@@ -1,7 +1,10 @@
 package parsing;
 
-public class F1A {
-    public static String[][] main(String data) {
+public class F1aParsingAlgorithm implements ParsingAlgorithm {
+
+    private final DataType DATA_TYPE = DataType.F1A;
+
+    public String[][] parse(String data) {
         String[] lines = data.split("\\n");
         int numberOfPoints = lines.length;
         String[][] parsedData = new String[3][numberOfPoints];
@@ -22,4 +25,9 @@ public class F1A {
         parsedData[0][2] = "Игрик";
         return parsedData;
         }
+
+    @Override
+    public boolean canProcessThisType(DataType dataType) {
+        return this.DATA_TYPE.equals(dataType);
+    }
 }
