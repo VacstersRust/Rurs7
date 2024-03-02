@@ -17,7 +17,6 @@ public class graph extends JFrame {
     private ChartPanel panel;
 
 
-
     public graph(String title) {
         super(title);
 
@@ -29,9 +28,11 @@ public class graph extends JFrame {
     private ChartPanel createChartPanel() {
         // Create dataset
         series = new XYSeries("Data Series"); // Используем поле класса, а не локальную переменную
-        series.add(1.0, 2.0);
-        series.add(2.0, 3.0);
-        series.add(3.0, 2.5);
+        series.add(1.0, 1.0);
+        series.add(2.0, 4.0);
+        series.add(3.0, 9);
+        series.add(4.0, 16);
+        series.add(5.0, 25);
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
 
@@ -49,6 +50,19 @@ public class graph extends JFrame {
         renderer.setSeriesPaint(0, Color.BLUE); // Set color of the points
         renderer.setSeriesShape(0, new Ellipse2D.Double(-3, -3, 6, 6)); // Set shape of the points
 
+        plot.setDomainCrosshairVisible(true); // Включить отображение вертикальной линии курсора
+        plot.setRangeCrosshairVisible(true);  // Включить отображение горизонтальной линии курсора
+        plot.setDomainCrosshairLockedOnData(false); // Закрепить вертикальный курсор за данными
+        plot.setRangeCrosshairLockedOnData(false); // Закрепить вертикальный курсор за данными
+
+
+// Настраиваем стиль вертикального курсора
+        plot.setDomainCrosshairPaint(Color.RED); // Цвет линии курсора
+        plot.setDomainCrosshairStroke(new BasicStroke(2)); // Толщина линии курсора
+        plot.setDomainCrosshairPaint(Color.BLUE); // Цвет метки курсора
+        plot.setDomainCrosshairPaint(new Color(255, 255, 255, 150)); // Фон метки курсора
+
+
         // Create panel
         ChartPanel panel = new ChartPanel(chart);
 
@@ -60,9 +74,10 @@ public class graph extends JFrame {
                     // Get the X coordinate where the mouse was clicked
                     double xCoordinate = panel.getChart().getXYPlot().getDomainAxis().java2DToValue(e.getX(), panel.getChartRenderingInfo().getPlotInfo().getDataArea(), panel.getChart().getXYPlot().getDomainAxisEdge());
                     double yCoordinate = calculateY(xCoordinate);
+
                     // Create and show mini window
-                    CoordinateInfoWindow miniWindow = new CoordinateInfoWindow(xCoordinate, e.getX(), e.getY(), panel);
-                    panel.add(miniWindow);
+                    CoordinateInfoWindow miniWindow = new CoordinateInfoWindow(xCoordinate, calculateY(xCoordinate), e.getX(), e.getY(), panel);
+                    panel.add(miniWindow, BorderLayout.EAST); // Для центрирования компонента
                     miniWindow.setBounds(e.getX(), e.getY(), miniWindow.getPreferredSize().width, miniWindow.getPreferredSize().height);
                     miniWindow.setVisible(true);
 
@@ -73,7 +88,7 @@ public class graph extends JFrame {
             }
 
             private double calculateY(double xCoordinate) {
-                return findNearestPointIndex(xCoordinate);
+                return linearInterpolation(xCoordinate, findNearestPointIndex(xCoordinate));
             }
         });
         return panel;
@@ -85,10 +100,10 @@ public class graph extends JFrame {
         double minDistance = Double.MAX_VALUE;
         for (int i = 0; i < series.getItemCount(); i++) {
             double x = series.getX(i).doubleValue();
-            double distance = Math.abs(x - xClicked);
-            if (distance < minDistance) {
+            double distance = x - xClicked;
+            if (distance > 0 && distance < minDistance) { // Рассматриваем только положительные расстояния (правые точки)
                 minDistance = distance;
-                index = i;
+                index = i - 1; // Выбираем индекс соседней точки слева
             }
         }
         return index;
@@ -113,10 +128,11 @@ public class graph extends JFrame {
         private int dy;
         private Container parent;
 
-        public CoordinateInfoWindow(double xCoordinate, int x, int y, Container parent) {
+        public CoordinateInfoWindow(double xCoordinate, double yCoordinate, int x, int y, Container parent) {
             this.parent = parent;
             setLayout(new FlowLayout(FlowLayout.CENTER));
             label = new JLabel("X Coordinate: " + xCoordinate);
+            label = new JLabel("Y Coordinate:" + yCoordinate);
             add(label);
 
             closeButton = new JButton("Close");
@@ -147,7 +163,6 @@ public class graph extends JFrame {
             });
         }
     }
-
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
