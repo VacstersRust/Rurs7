@@ -1,7 +1,12 @@
 package parsing;
 
+import dto.GraphPoint;
+import dto.PointMetadata;
+import dto.Simple2DPoint;
+
 import javax.swing.*;
 import java.awt.geom.Point2D;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +25,13 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
         metadata.add("Sample A");
         metadata.add("Date: 2024-01-04");
         metadata.add("Technician: John Doe");
+
+        PointMetadata pointMetadata = new PointMetadata(
+                DATA_TYPE,
+                LocalDateTime.now(),
+                "Sample A",
+                "John Doe"
+        );
 
 
         String[] paramArray = parameters.keySet().toArray(new String[0]);
@@ -65,13 +77,15 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
 
             String[][] resultData = new String[4][countPoints];
+            Simple2DPoint[] points = new Simple2DPoint[countPoints];
 
 
 // Записываем метаданные в resultData[0][]
-            for (int i = 0; i < metadata.size(); i++) {
+/*            for (int i = 0; i < metadata.size(); i++) {
                 resultData[0][i] = metadata.get(i);
-            }
+            }*/
 // Остальные данные
+
             for (int i = 1; i < 4; i++) {
                 for (int j = 0; j < countPoints; j++) {
                     resultData[i][j] = String.valueOf(parsedData[i][j]);
