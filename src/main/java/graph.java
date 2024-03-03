@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 public class graph extends JFrame {
     private DefaultXYDataset userPointDataset;
@@ -17,6 +19,7 @@ public class graph extends JFrame {
     private XYSeries series;
     private JFreeChart chart;
     private ChartPanel panel;
+    Map<Integer, Integer> indexmap = new HashMap<>();
     private int dx;
     private int dy;
 
@@ -28,6 +31,7 @@ public class graph extends JFrame {
 
     private ChartPanel createChartPanel() {
         XYSeriesCollection dataset = new XYSeriesCollection();
+        DefaultXYDataset userPointDataset = new DefaultXYDataset();
         series = createDataset(); // Входная точка данных
         dataset.addSeries(series);
 
@@ -37,9 +41,7 @@ public class graph extends JFrame {
                 "Y",
                 dataset
         );
-        // Пользовательские точки
-        userPointDataset = new DefaultXYDataset();
-        userPointsRenderer = new XYLineAndShapeRenderer(false, true); // Только отображение точек
+
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         chart.getXYPlot().setRenderer(renderer);
 
@@ -53,15 +55,23 @@ public class graph extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     // Get the X coordinate where the mouse was clicked
-                    double xCoordinate = panel.getChart().getXYPlot().getDomainAxis().java2DToValue(e.getX(), panel.getChartRenderingInfo().getPlotInfo().getDataArea(), panel.getChart().getXYPlot().getDomainAxisEdge());
+                    double xCoordinate = panel.getChart().getXYPlot().getDomainAxis().java2DToValue(e.getX(),
+                            panel.getChartRenderingInfo().getPlotInfo().getDataArea(),
+                            panel.getChart().getXYPlot().getDomainAxisEdge());
                     double yCoordinate = calculateY(xCoordinate);
-                    addIndependentPointToChart(xCoordinate, yCoordinate);
 
                     // Create and show mini window
-                    CoordinateInfoWindow miniWindow = new CoordinateInfoWindow(xCoordinate, yCoordinate, coordinatePanel);
+                    CoordinateInfoWindow miniWindow = new CoordinateInfoWindow(
+                            xCoordinate,
+                            yCoordinate,
+                            panel,
+                            coordinatePanel,
+                            userPointDataset,
+                            indexmap
+                    );
+
                     miniWindow.setBounds(e.getX(), e.getY(), miniWindow.getPreferredSize().width, miniWindow.getPreferredSize().height);
                     miniWindow.setVisible(true);
-
 
                     coordinatePanel.add(miniWindow, BorderLayout.EAST); // Для центрирования компонента
                     coordinatePanel.revalidate();
@@ -79,11 +89,6 @@ public class graph extends JFrame {
     }
 
 
-    private void addIndependentPointToChart(double x, double y) {
-        int indexDataSet = userPointDataset.getSeriesCount() + 1; // Индекс новой серии данных
-        userPointDataset.addSeries("Point " + indexDataSet, new double[][]{{x}, {y}});
-        panel.getChart().getXYPlot().setDataset(1, userPointDataset);
-    }
 
 
     private XYSeries createDataset() {
@@ -138,55 +143,6 @@ public class graph extends JFrame {
         // Linear interpolation formula: y = y1 + (x - x1) * (y2 - y1) / (x2 - x1)
         return y1 + (xClicked - x1) * (y2 - y1) / (x2 - x1);
     }
-
-
-
-
-    // Custom component to display coordinate info and close button
-    public class CoordinateInfoWindow extends JPanel {
-        private JPanel coordinatePanel; // Добавляем поле для хранения ссылки на родительскую панель
-        private JLabel label;
-        private JButton closeButton;
-        private Container parent;
-
-        public CoordinateInfoWindow(double xCoordinate, double yCoordinate, JPanel coordinatePanel) {
-            this.coordinatePanel = coordinatePanel; // Сохраняем ссылку на родительскую панель
-            // Вызов метода для создания кнопки
-            createLabel(xCoordinate, yCoordinate);
-            createCloseButton();
-            createStyle();// Вызов стиля записи
-        }
-
-        // Метод для создания стиля одной записи
-        private void createStyle() {
-            setBackground(Color.white);
-            setBorder(BorderFactory.createLineBorder(Color.black));
-        }
-
-        // Метод для создания подписи
-        private void createLabel(double xCoordinate, double yCoordinate) {
-            setLayout(new FlowLayout(FlowLayout.CENTER));
-            label = new JLabel("X Coordinate: " + xCoordinate);
-            label = new JLabel("Y Coordinate:" + yCoordinate);
-            add(label);
-        }
-
-        // Метод для создания кнопки Close
-        private void createCloseButton() {
-            closeButton = new JButton("Close");
-            closeButton.addActionListener(e -> {
-                if (coordinatePanel != null) {
-                    coordinatePanel.remove(this); // Удаляем компонент из его родительской панели
-                    coordinatePanel.repaint();
-                    coordinatePanel.revalidate();
-                }
-            });
-            add(closeButton);
-        }
-    }
-
-
-
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
