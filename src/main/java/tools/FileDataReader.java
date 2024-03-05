@@ -1,5 +1,6 @@
 package tools;
 
+import dto.GraphPointSeries;
 import parsing.DataType;
 import parsing.ParsingAlgorithmFactory;
 
@@ -16,7 +17,7 @@ import java.io.IOException;
             this.parsingAlgorithmFactory = new ParsingAlgorithmFactory();
         }
 
-        public String[][] readFileData(String filePath, DataType fileExtension) {
+        public GraphPointSeries readFileData(String filePath, DataType fileExtension) {
         try {
             StringBuilder content = new StringBuilder();
             FileReader fileReader = new FileReader(filePath);
@@ -36,7 +37,7 @@ import java.io.IOException;
         return null;
     }
 
-    public String[][] parseData(String data, DataType fileExtension) {
+    public GraphPointSeries parseData(String data, DataType fileExtension) {
         if (fileExtension != null) {
             return parsingAlgorithmFactory.getAlgorithm(fileExtension).parse(data);
         }

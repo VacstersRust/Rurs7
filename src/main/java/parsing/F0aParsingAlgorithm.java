@@ -1,6 +1,6 @@
 package parsing;
 
-import dto.GraphPoint;
+import dto.GraphPointSeries;
 import dto.PointMetadata;
 import dto.Simple2DPoint;
 
@@ -16,16 +16,10 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F0A;
     @Override
-    public String[][] parse(String data) {
+    public GraphPointSeries parse(String data) {
         Map<String, List<Map<String, String>>> parameters = parseF0AData(data);
 
         // Добавим пример метаданных
-        List<String> metadata = new ArrayList<>();
-        metadata.add("f0a");
-        metadata.add("Sample A");
-        metadata.add("Date: 2024-01-04");
-        metadata.add("Technician: John Doe");
-
         PointMetadata pointMetadata = new PointMetadata(
                 DATA_TYPE,
                 LocalDateTime.now(),
@@ -77,21 +71,18 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
 
             String[][] resultData = new String[4][countPoints];
-            Simple2DPoint[] points = new Simple2DPoint[countPoints];
+            Simple2DPoint[] pSeries = new Simple2DPoint[countPoints];
+            Simple2DPoint[] tSeries = new Simple2DPoint[countPoints];
 
-
-// Записываем метаданные в resultData[0][]
-/*            for (int i = 0; i < metadata.size(); i++) {
-                resultData[0][i] = metadata.get(i);
-            }*/
-// Остальные данные
-
-            for (int i = 1; i < 4; i++) {
-                for (int j = 0; j < countPoints; j++) {
-                    resultData[i][j] = String.valueOf(parsedData[i][j]);
-                }
+            for (int i = 0; i < countPoints; i++) {
+                pSeries[i] = new Simple2DPoint(parsedData[1][i], parsedData[3][i]);
+                tSeries[i] = new Simple2DPoint(parsedData[2][i], parsedData[3][i]);
             }
-            return resultData;
+            List<Simple2DPoint[]> pointsSeries = new ArrayList<>();
+            pointsSeries.add(pSeries);
+            pointsSeries.add(tSeries);
+
+            return new GraphPointSeries(pointMetadata, pointsSeries);
         }
         return null;
     }

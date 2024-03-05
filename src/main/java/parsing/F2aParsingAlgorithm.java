@@ -1,13 +1,18 @@
 package parsing;
 
+import dto.GraphPointSeries;
+import dto.PointMetadata;
+import dto.Simple2DPoint;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class F2aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F2A;
-    public String[][] parse(String data) {
-        List<String[]> resultData = new ArrayList<>();
+    public GraphPointSeries parse(String data) {
+        String[][] resultData = new String[4][];
 
         List<String> temperatures = new ArrayList<>();
         List<String> pressures = new ArrayList<>();
@@ -24,7 +29,13 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
         metadata.add("Температура");
         metadata.add("Вязкость");
         metadata.add("Давление");
-        resultData.add(metadata.toArray(new String[0]));
+        PointMetadata pointMetadata = new PointMetadata(
+                DataType.F2A,
+                LocalDateTime.now(),
+                "Вязкость",
+                "Давление"
+        );
+        resultData[0] = metadata.toArray(new String[0]);
 
         for (String line : lines) {
             if (line.startsWith("#") || line.trim().isEmpty()) {
@@ -45,21 +56,23 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
             }
         }
 
+        Simple2DPoint[] xSeries = new Simple2DPoint[temperatures.size()];
+
+
         // Добавляем данные для последней температуры, если они есть
         if (!temperatures.isEmpty()) {
-            resultData.add(temperatures.toArray(new String[0]));
-            resultData.add(pressures.toArray(new String[0]));
-            resultData.add(viscosities.toArray(new String[0]));
+            resultData[1] = temperatures.toArray(new String[0]);
+            resultData[2] = pressures.toArray(new String[0]);
+            resultData[3] = viscosities.toArray(new String[0]);
+
         }
 
-        // Преобразуем List в двумерный массив
-        String[][] result = new String[resultData.size()][];
-        for (int i = 0; i < resultData.size(); i++) {
-            result[i] = resultData.get(i);
-        }
+
+
 
         // Возвращаем результат
-        return result.length > 0 ? result : null;
+        List<Simple2DPoint[]> points = new ArrayList<>();
+        return new GraphPointSeries(pointMetadata, points);
     }
 
     @Override
