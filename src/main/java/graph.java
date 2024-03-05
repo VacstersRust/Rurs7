@@ -10,18 +10,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 public class graph extends JFrame {
     private DefaultXYDataset userPointDataset;
-    private XYLineAndShapeRenderer userPointsRenderer;
+    private XYLineAndShapeRenderer userRenderer;
     private XYSeries series;
     private JFreeChart chart;
     private ChartPanel panel;
-    Map<Integer, Integer> indexmap = new HashMap<>();
     private int dx;
     private int dy;
+    private int id;
 
     public graph(String title) {
         super(title);
@@ -35,21 +33,24 @@ public class graph extends JFrame {
         series = createDataset(); // Входная точка данных
         dataset.addSeries(series);
 
-        JFreeChart chart = ChartFactory.createXYLineChart(
+
+        chart = ChartFactory.createXYLineChart(
                 "XY Chart Example",
                 "X",
                 "Y",
                 dataset
         );
 
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        chart.getXYPlot().setRenderer(renderer);
+        userRenderer = new XYLineAndShapeRenderer(true, true);
+        userRenderer.setAutoPopulateSeriesShape(false);
+        userRenderer.setAutoPopulateSeriesPaint(false);
+        chart.getXYPlot().setRenderer(userRenderer);
+        ChartPanel panel = new ChartPanel(chart);
 
-        // Добавление созданного графика в панели
         JPanel coordinatePanel = new JPanel();
         coordinatePanel.setLayout(new BoxLayout(coordinatePanel, BoxLayout.Y_AXIS));
 
-        ChartPanel panel = new ChartPanel(chart);
+        id = 0;
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -59,6 +60,7 @@ public class graph extends JFrame {
                             panel.getChartRenderingInfo().getPlotInfo().getDataArea(),
                             panel.getChart().getXYPlot().getDomainAxisEdge());
                     double yCoordinate = calculateY(xCoordinate);
+                    id ++;
 
                     // Create and show mini window
                     CoordinateInfoWindow miniWindow = new CoordinateInfoWindow(
@@ -67,12 +69,15 @@ public class graph extends JFrame {
                             panel,
                             coordinatePanel,
                             userPointDataset,
-                            indexmap
+                            id
                     );
 
                     miniWindow.setBounds(e.getX(), e.getY(), miniWindow.getPreferredSize().width, miniWindow.getPreferredSize().height);
                     miniWindow.setVisible(true);
 
+                    coordinatePanel.setLayout(new BoxLayout(coordinatePanel, BoxLayout.Y_AXIS));
+                    coordinatePanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                    coordinatePanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
                     coordinatePanel.add(miniWindow, BorderLayout.EAST); // Для центрирования компонента
                     coordinatePanel.revalidate();
                 }
