@@ -3,6 +3,9 @@ package parsing;
 import dto.GraphPointSeries;
 import dto.PointMetadata;
 import dto.Simple2DPoint;
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
@@ -71,18 +74,19 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
 
             String[][] resultData = new String[4][countPoints];
-            Simple2DPoint[] pSeries = new Simple2DPoint[countPoints];
-            Simple2DPoint[] tSeries = new Simple2DPoint[countPoints];
+
+            XYSeries pSer = new XYSeries("P_series");
+            XYSeries tSer = new XYSeries("T_series");
 
             for (int i = 0; i < countPoints; i++) {
-                pSeries[i] = new Simple2DPoint(parsedData[1][i], parsedData[3][i]);
-                tSeries[i] = new Simple2DPoint(parsedData[2][i], parsedData[3][i]);
+                pSer.add(parsedData[1][i], parsedData[3][i]);
+                pSer.add(parsedData[2][i], parsedData[3][i]);
             }
-            List<Simple2DPoint[]> pointsSeries = new ArrayList<>();
-            pointsSeries.add(pSeries);
-            pointsSeries.add(tSeries);
+            XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
+            xySeriesCollection.addSeries(pSer);
+            xySeriesCollection.addSeries(tSer);
 
-            return new GraphPointSeries(pointMetadata, pointsSeries);
+            return new GraphPointSeries(pointMetadata, xySeriesCollection);
         }
         return null;
     }

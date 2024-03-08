@@ -8,7 +8,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYSeriesCollection;
 import parsing.DataType;
 
 import javax.swing.*;
@@ -114,7 +116,7 @@ public class DrawBlock extends JPanel {
         clearGraph();
         DataType dataType = data.getPointMetadata().getDataType();
 
-        switch (dataType) {
+/*        switch (dataType) {
             case F0A:
                 get_f0a();
                 break;
@@ -127,7 +129,9 @@ public class DrawBlock extends JPanel {
             default:
                 System.out.println("Unknown data type: " + dataType);
                 break;
-        }
+        }*/
+
+        drawXyGraph(data.getSeriesCollection());
     }
 // createMap(name, x, y);
     private void get_f0a() {
@@ -224,6 +228,17 @@ private JToggleButton createToggleButton() {
 
         dataset.addSeries(graph_name, xyData);
         chart.getXYPlot().setDataset(dataset);
+        XYItemRenderer renderer = chart.getXYPlot().getRenderer();
+        BasicStroke stroke = new BasicStroke(lineThickness);
+
+        for (int i = 0; i < dataset.getSeriesCount(); i++) {
+            renderer.setSeriesStroke(i, stroke);
+        }
+        repaint();
+    }
+
+    public void drawXyGraph(XYSeriesCollection xySeriesCollection) {
+        chart.getXYPlot().setDataset(xySeriesCollection);
         XYItemRenderer renderer = chart.getXYPlot().getRenderer();
         BasicStroke stroke = new BasicStroke(lineThickness);
 

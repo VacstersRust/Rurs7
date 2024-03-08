@@ -3,6 +3,7 @@ package parsing;
 import dto.GraphPointSeries;
 import dto.PointMetadata;
 import dto.Simple2DPoint;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -71,8 +72,7 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
 
 
         // Возвращаем результат
-        List<Simple2DPoint[]> points = new ArrayList<>();
-        return new GraphPointSeries(pointMetadata, points);
+        return new GraphPointSeries(pointMetadata, new XYSeriesCollection());
     }
 
     @Override

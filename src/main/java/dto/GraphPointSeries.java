@@ -1,14 +1,17 @@
 package dto;
 
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 import java.util.List;
 
 public class GraphPointSeries {
     private PointMetadata pointMetadata;
-    private List<Simple2DPoint[]> simple2DPointsSeries;
+    private XYSeriesCollection seriesCollection;
 
-    public GraphPointSeries(PointMetadata pointMetadata, List<Simple2DPoint[]> simple2DPointsSeries) {
+    public GraphPointSeries(PointMetadata pointMetadata, XYSeriesCollection seriesCollection) {
         this.pointMetadata = pointMetadata;
-        this.simple2DPointsSeries = simple2DPointsSeries;
+        this.seriesCollection = seriesCollection;
     }
 
     public PointMetadata getPointMetadata() {
@@ -19,11 +22,11 @@ public class GraphPointSeries {
         this.pointMetadata = pointMetadata;
     }
 
-    public List<Simple2DPoint[]> getSimple2DPoints() {
-        return simple2DPointsSeries;
+    public XYSeriesCollection getSeriesCollection() {
+        return seriesCollection;
     }
 
-    public void setSimple2DPoints(List<Simple2DPoint[]> simple2DPoints) {
-        this.simple2DPointsSeries = simple2DPoints;
+    public void setSeriesCollection(XYSeriesCollection simple2DPoints) {
+        this.seriesCollection = simple2DPoints;
     }
 }
