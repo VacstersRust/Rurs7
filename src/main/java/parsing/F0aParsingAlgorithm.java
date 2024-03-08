@@ -80,7 +80,7 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
             for (int i = 0; i < countPoints; i++) {
                 pSer.add(parsedData[1][i], parsedData[3][i]);
-                pSer.add(parsedData[2][i], parsedData[3][i]);
+                tSer.add(parsedData[2][i], parsedData[3][i]);
             }
             XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
             xySeriesCollection.addSeries(pSer);
