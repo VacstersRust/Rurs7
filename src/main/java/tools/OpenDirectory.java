@@ -14,7 +14,6 @@ public class OpenDirectory {
             File selectedFile = fileChooser.getSelectedFile();
             return selectedFile.getAbsolutePath();
         }
-
         return null;
     }
 }

@@ -3,7 +3,7 @@ package parsing;
 import javax.swing.*;
 import java.util.*;
 
-public class F0A {
+public class    F0A {
     // Диапазон P(0-600Atmosp), T (-100+350)
     public static String[][] main(String data) {
         Map<String, List<Map<String, String>>> parameters = parseF0AData(data);

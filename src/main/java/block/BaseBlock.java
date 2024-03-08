@@ -27,6 +27,7 @@ public class BaseBlock extends JPanel {
         splitPane.setContinuousLayout(true);
         add(splitPane, BorderLayout.CENTER);
 
+
         // Панель управления:
         SettingsBlock settingsBlock = new SettingsBlock(directoryTree);
         settingsBlock.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

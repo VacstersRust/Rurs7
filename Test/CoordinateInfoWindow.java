@@ -62,7 +62,7 @@ public class CoordinateInfoWindow extends JPanel {
     }
 
     // Метод для создания подписи
-    private void createLabel(double xCoordinate, double yCoordinate) {
+    private void selectPoint(double xCoordinate, double yCoordinate) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Используем вертикальное расположение компонентов
         JLabel label = new JLabel("Точка : " + index);
         label.setForeground(Color.blue); // Устанавливаем цвет текста

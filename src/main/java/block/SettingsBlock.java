@@ -11,7 +11,6 @@ public class SettingsBlock extends JPanel {
     public SettingsBlock(DirectoryTree directoryTree) {
         this.directoryTree = directoryTree;
 
-
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
         JButton fileButton = new JButton("File");
@@ -20,7 +19,7 @@ public class SettingsBlock extends JPanel {
         add(Box.createHorizontalStrut(5)); // Padding
         add(fileButton);
         add(Box.createHorizontalStrut(5)); // Padding
-        add(settingsButton);
+        // add(settingsButton);
 
         settingsButton.addActionListener(e -> {
             SettingsWindow settingsWindow = new SettingsWindow();
