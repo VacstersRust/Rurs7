@@ -1,6 +1,6 @@
 package tools;
 
-import dto.GraphPointSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import parsing.DataType;
 import parsing.ParsingAlgorithmFactory;
 
@@ -17,7 +17,7 @@ import java.io.IOException;
             this.parsingAlgorithmFactory = new ParsingAlgorithmFactory();
         }
 
-        public GraphPointSeries readFileData(String filePath, DataType fileExtension) {
+        public XYSeriesCollection readFileData(String filePath, DataType fileExtension) {
         try {
             StringBuilder content = new StringBuilder();
             FileReader fileReader = new FileReader(filePath);
@@ -37,7 +37,7 @@ import java.io.IOException;
         return null;
     }
 
-    public GraphPointSeries parseData(String data, DataType fileExtension) {
+    public XYSeriesCollection parseData(String data, DataType fileExtension) {
         if (fileExtension != null) {
             return parsingAlgorithmFactory.getAlgorithm(fileExtension).parse(data);
         }

@@ -1,8 +1,5 @@
 package parsing;
 
-import dto.GraphPointSeries;
-import dto.PointMetadata;
-import dto.Simple2DPoint;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.time.LocalDateTime;
@@ -12,7 +9,7 @@ import java.util.List;
 public class F2aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F2A;
-    public GraphPointSeries parse(String data) {
+    public XYSeriesCollection parse(String data) {
         String[][] resultData = new String[4][];
 
         List<String> temperatures = new ArrayList<>();
@@ -30,12 +27,8 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
         metadata.add("Температура");
         metadata.add("Вязкость");
         metadata.add("Давление");
-        PointMetadata pointMetadata = new PointMetadata(
-                DataType.F2A,
-                LocalDateTime.now(),
-                "Вязкость",
-                "Давление"
-        );
+
+        XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
         resultData[0] = metadata.toArray(new String[0]);
 
         for (String line : lines) {
@@ -57,7 +50,6 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
             }
         }
 
-        Simple2DPoint[] xSeries = new Simple2DPoint[temperatures.size()];
 
 
         // Добавляем данные для последней температуры, если они есть
@@ -72,7 +64,7 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
 
 
         // Возвращаем результат
-        return new GraphPointSeries(pointMetadata, new XYSeriesCollection());
+        return xySeriesCollection;
     }
 
     @Override

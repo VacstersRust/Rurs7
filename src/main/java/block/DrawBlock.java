@@ -1,6 +1,5 @@
 package block;
 
-import dto.GraphPointSeries;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -85,7 +84,7 @@ public class DrawBlock extends JPanel {
         repaint();
     }
 
-    public void putData(GraphPointSeries data) {
+    public void putData(XYSeriesCollection data) {
 
 //        // Создание слоя
 //        JLayeredPane layeredPane = new JLayeredPane();
@@ -114,7 +113,6 @@ public class DrawBlock extends JPanel {
         }
         catch (NullPointerException ignored) {}
         clearGraph();
-        DataType dataType = data.getPointMetadata().getDataType();
 
 /*        switch (dataType) {
             case F0A:
@@ -131,7 +129,7 @@ public class DrawBlock extends JPanel {
                 break;
         }*/
 
-        drawXyGraph(data.getSeriesCollection());
+        drawXyGraph(data);
     }
 // createMap(name, x, y);
     private void get_f0a() {

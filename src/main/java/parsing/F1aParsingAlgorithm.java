@@ -1,35 +1,25 @@
 package parsing;
 
-import dto.GraphPointSeries;
-import dto.PointMetadata;
-import dto.Simple2DPoint;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class F1aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F1A;
 
-    public GraphPointSeries parse(String data) {
+    public XYSeriesCollection parse(String data) {
         String[] lines = data.split("\\n");
         int numberOfPoints = lines.length;
         String[][] parsedData = new String[3][numberOfPoints];
 
-        Simple2DPoint[] xSeries = new Simple2DPoint[numberOfPoints];
         XYSeries xySeries = new XYSeries("X_Series");
-        for (int i = 0; i < numberOfPoints; i++) {
-            String[] values = lines[i].split("\\s+");
+        for (String line : lines) {
+            String[] values = line.split("\\s+");
 
             if (values.length == 2) {
                 try {
-                    xSeries[i] = new Simple2DPoint(
-                            Double.parseDouble(values[0]),
-                            Double.parseDouble(values[1])
-                    );
                     xySeries.add(Double.parseDouble(values[0]), Double.parseDouble(values[1]));
 /*                parsedData[1][i] = values[0]; // x
                 parsedData[2][i] = values[1]; // y*/
@@ -38,18 +28,11 @@ public class F1aParsingAlgorithm implements ParsingAlgorithm {
                 }
             }
         }
-
-        PointMetadata pointMetadata = new PointMetadata(
-                DataType.F1A,
-                LocalDateTime.now(),
-                "Sample B",
-                "John doe"
-
-        );/*
+        /*
         parsedData[0][0] = " f1a";
         parsedData[0][1] = "Икс";
         parsedData[0][2] = "Игрик"; */
-        return new GraphPointSeries(pointMetadata, new XYSeriesCollection(xySeries));
+        return new XYSeriesCollection(xySeries);
         }
 
     @Override

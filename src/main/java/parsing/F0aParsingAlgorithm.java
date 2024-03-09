@@ -1,9 +1,5 @@
 package parsing;
 
-import dto.GraphPointSeries;
-import dto.PointMetadata;
-import dto.Simple2DPoint;
-import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -19,16 +15,8 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F0A;
     @Override
-    public GraphPointSeries parse(String data) {
+    public XYSeriesCollection parse(String data) {
         Map<String, List<Map<String, String>>> parameters = parseF0AData(data);
-
-        // Добавим пример метаданных
-        PointMetadata pointMetadata = new PointMetadata(
-                DATA_TYPE,
-                LocalDateTime.now(),
-                "Sample A",
-                "John Doe"
-        );
 
 
         String[] paramArray = parameters.keySet().toArray(new String[0]);
@@ -86,7 +74,7 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
             xySeriesCollection.addSeries(pSer);
             xySeriesCollection.addSeries(tSer);
 
-            return new GraphPointSeries(pointMetadata, xySeriesCollection);
+            return xySeriesCollection;
         }
         return null;
     }
