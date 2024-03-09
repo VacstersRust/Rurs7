@@ -29,7 +29,8 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
         metadata.add("Вязкость");
         metadata.add("Давление");
 
-        Map<String, List<XYDataItem>> tPoints = new HashMap<>();
+        Map<String, List<XYDataItem>> tPoints = new TreeMap<>();
+        Map<String, List<XYDataItem>> pPoints = new TreeMap<>();
 
         XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
         XYSeriesCollection tySeriesCollection = new XYSeriesCollection();
@@ -62,26 +63,57 @@ public class F2aParsingAlgorithm implements ParsingAlgorithm {
         if (!temperatures.isEmpty()) {
             for (int i =0; i < temperatures.size(); i++)
             {
-                XYDataItem item = new XYDataItem(
+                XYDataItem pvItem = new XYDataItem(
                         Double.parseDouble(pressures.get(i)),
                         Double.parseDouble(viscosities.get(i))
                 );
                 if (tPoints.containsKey(temperatures.get(i))) {
-                    tPoints.get(temperatures.get(i)).add(item);
+                    tPoints.get(temperatures.get(i)).add(pvItem);
                 }
                 else {
                     ArrayList<XYDataItem> itemArrayList = new ArrayList<>();
-                    itemArrayList.add(item);
+                    itemArrayList.add(pvItem);
                     tPoints.put(temperatures.get(i), itemArrayList);
                 }
+
+                XYDataItem tvItem = new XYDataItem(
+                        Double.parseDouble(temperatures.get(i)),
+                        Double.parseDouble(viscosities.get(i))
+                );
+
+
+                if (pPoints.containsKey(pressures.get(i))) {
+                    pPoints.get(pressures.get(i)).add(tvItem);
+                }
+                else {
+                    ArrayList<XYDataItem> itemArrayList = new ArrayList<>();
+                    itemArrayList.add(tvItem);
+                    pPoints.put(pressures.get(i), itemArrayList);
+                }
+
+
             }
 
             for (String key : tPoints.keySet()) {
-                XYSeries series = new XYSeries(key);
+                XYSeries pvSeries = new XYSeries(key);
                 for (XYDataItem item : tPoints.get(key)) {
-                    series.add(item);
+                    pvSeries.add(item);
+
                 }
-                xySeriesCollection.addSeries(series);
+                xySeriesCollection.addSeries(pvSeries);
+
+
+            }
+
+            for (String key : pPoints.keySet()) {
+                XYSeries tvSeries = new XYSeries(key);
+                for (XYDataItem item : pPoints.get(key)) {
+                    tvSeries.add(item);
+
+                }
+                tySeriesCollection.addSeries(tvSeries);
+
+
             }
 
             resultData[1] = temperatures.toArray(new String[0]);
