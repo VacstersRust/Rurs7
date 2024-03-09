@@ -15,7 +15,7 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F0A;
     @Override
-    public XYSeriesCollection parse(String data) {
+    public List<XYSeriesCollection> parse(String data) {
         Map<String, List<Map<String, String>>> parameters = parseF0AData(data);
 
 
@@ -74,7 +74,10 @@ public class F0aParsingAlgorithm implements ParsingAlgorithm {
             xySeriesCollection.addSeries(pSer);
             xySeriesCollection.addSeries(tSer);
 
-            return xySeriesCollection;
+            ArrayList<XYSeriesCollection> collectionArrayList = new ArrayList<>();
+            collectionArrayList.add(xySeriesCollection);
+
+            return collectionArrayList;
         }
         return null;
     }

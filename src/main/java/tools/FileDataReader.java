@@ -8,8 +8,9 @@ import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
-    public class FileDataReader {
+public class FileDataReader {
 
         private final ParsingAlgorithmFactory parsingAlgorithmFactory;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
             this.parsingAlgorithmFactory = new ParsingAlgorithmFactory();
         }
 
-        public XYSeriesCollection readFileData(String filePath, DataType fileExtension) {
+        public List<XYSeriesCollection> readFileData(String filePath, DataType fileExtension) {
         try {
             StringBuilder content = new StringBuilder();
             FileReader fileReader = new FileReader(filePath);
@@ -37,7 +38,7 @@ import java.io.IOException;
         return null;
     }
 
-    public XYSeriesCollection parseData(String data, DataType fileExtension) {
+    public List<XYSeriesCollection> parseData(String data, DataType fileExtension) {
         if (fileExtension != null) {
             return parsingAlgorithmFactory.getAlgorithm(fileExtension).parse(data);
         }

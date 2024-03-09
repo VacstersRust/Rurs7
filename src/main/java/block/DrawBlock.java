@@ -18,6 +18,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DrawBlock extends JPanel {
@@ -84,7 +85,7 @@ public class DrawBlock extends JPanel {
         repaint();
     }
 
-    public void putData(XYSeriesCollection data) {
+    public void putData(List<XYSeriesCollection> data, DataType dataType) {
 
 //        // Создание слоя
 //        JLayeredPane layeredPane = new JLayeredPane();
@@ -114,22 +115,19 @@ public class DrawBlock extends JPanel {
         catch (NullPointerException ignored) {}
         clearGraph();
 
-/*        switch (dataType) {
+        switch (dataType) {
             case F0A:
-                get_f0a();
-                break;
             case F1A:
-                get_f1a();
+                clearGraph();
+                drawXyGraph(data.get(0));
                 break;
             case F2A:
-                get_f2a();
+                createToggleButton(data);
                 break;
             default:
                 System.out.println("Unknown data type: " + dataType);
                 break;
-        }*/
-
-        drawXyGraph(data);
+        }
     }
 // createMap(name, x, y);
     private void get_f0a() {
@@ -141,25 +139,30 @@ public class DrawBlock extends JPanel {
         drawGraph(dataxy, "Density");
     }
 
-    private void get_f2a() {
-        toggleButton = createToggleButton();
+/*    private void get_f2a() {
+        toggleButton = createToggleButton(data);
 
-    }
+    }*/
 
 
-private JToggleButton createToggleButton() {
-        JToggleButton toggleButton = new JToggleButton("Температура/Давление");
+private JToggleButton createToggleButton(List<XYSeriesCollection> xySeriesCollectionList) {
+        if (toggleButton == null) toggleButton = new JToggleButton("Температура/Давление");
         toggleButton.setSelected(false);
         toggleButton.addActionListener(e -> {
             if (toggleButton.isSelected()) {
                 clearGraph();
-                toggleButton.setLabel("Температура");
-                createMap(currentData[1], currentData[2], currentData[3], dataSetMap);
+                toggleButton.setLabel("К давлению");
+                drawXyGraph(xySeriesCollectionList.get(0));
+
+                //createMap(currentData[1], currentData[2], currentData[3], dataSetMap);
             } else {
                 clearGraph();
-                toggleButton.setLabel("Температура");
-                createMap(currentData[2], currentData[1], currentData[3], dataSetMap);
+                toggleButton.setLabel("К температуре");
+                //createMap(currentData[2], currentData[1], currentData[3], dataSetMap);
+                drawXyGraph(xySeriesCollectionList.get(1));
+
             }
+
         });
         add(toggleButton, BorderLayout.SOUTH);
         toggleButton.doClick();

@@ -3,13 +3,16 @@ package parsing;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class F1aParsingAlgorithm implements ParsingAlgorithm {
 
     private final DataType DATA_TYPE = DataType.F1A;
 
-    public XYSeriesCollection parse(String data) {
+    public List<XYSeriesCollection> parse(String data) {
         String[] lines = data.split("\\n");
         int numberOfPoints = lines.length;
         String[][] parsedData = new String[3][numberOfPoints];
@@ -32,7 +35,10 @@ public class F1aParsingAlgorithm implements ParsingAlgorithm {
         parsedData[0][0] = " f1a";
         parsedData[0][1] = "Икс";
         parsedData[0][2] = "Игрик"; */
-        return new XYSeriesCollection(xySeries);
+
+        ArrayList<XYSeriesCollection> collectionArrayList = new ArrayList<>();
+        collectionArrayList.add(new XYSeriesCollection(xySeries));
+        return collectionArrayList;
         }
 
     @Override

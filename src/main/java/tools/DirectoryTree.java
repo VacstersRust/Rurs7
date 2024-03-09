@@ -109,7 +109,8 @@ public class DirectoryTree {
                                 JOptionPane.showMessageDialog(tree, "Поддерживаются только файлы с разрешениями: .dat, .f0a, .f1a, .f2a", "Ошибка", JOptionPane.ERROR_MESSAGE);
 
 
-                            drawBlock.putData(fileDataReader.readFileData(String.valueOf(file), fileExtension));
+                            drawBlock.putData(fileDataReader.readFileData(String.valueOf(file), fileExtension),
+                                    fileExtension);
 
                         }
                     }
